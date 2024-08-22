@@ -18,16 +18,27 @@ class TikTokClass:
             "Desktop",
             "Daily_accounts",
             "bread_fall_daily",
-            "Script_bread_fall_daily_tiktok.txt",
+            "Script_bread_fall_daily_youtube.txt",
         )
 
         info_dict = {}
         try:
             with open(file_path, "r") as file:
+                current_key = None
                 for line in file:
-                    # Split each line by colon
-                    key, value = line.strip().split(":", 1)
-                    info_dict[key.strip()] = value.strip()
+                    line = line.strip()  # Remove leading/trailing whitespace
+
+                    if ":" in line:
+                        current_key, value = line.strip().split(":", 1)
+                        info_dict[current_key.strip()] = value.strip()
+                    else:
+                        # Append to description if same key
+                        if current_key == "Description":
+                            info_dict[current_key] += "\n" + line
+                        else:
+                            # Handle unexpected line format (optional)
+                            print(f"Warning: Unexpected line format: {line}")
+
         except FileNotFoundError:
             print(f"Error: File not found at {file_path}")
 
